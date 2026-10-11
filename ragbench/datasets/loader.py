@@ -4,12 +4,59 @@ import json
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-from ragbench.core.models import EvaluationQuery, RankedResult
+from ragbench.core.models import Document, EvaluationQuery, RankedResult
 
 
 def get_default_dataset_path() -> Path:
     """Return the absolute path to the bundled sample dataset JSON."""
     return Path(__file__).parent / "sample_dataset.json"
+
+
+def get_default_corpus_path() -> Path:
+    """Return the absolute path to the bundled sample corpus JSON."""
+    return Path(__file__).parent / "sample_corpus.json"
+
+
+def load_corpus_from_json(file_path: Path | str) -> List[Document]:
+    """Load a text document corpus from a JSON file.
+
+    Args:
+        file_path: Path to the JSON corpus file.
+
+    Returns:
+        List of Document model instances.
+
+    Raises:
+        FileNotFoundError: If the corpus file does not exist.
+        ValueError: If the file format is invalid or has no documents.
+    """
+    path = Path(file_path)
+    if not path.is_file():
+        raise FileNotFoundError(f"Corpus file not found at: {path}")
+
+    with path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    docs_data = data.get("documents", [])
+    if not docs_data:
+        raise ValueError(f"No documents found in corpus file: {path}")
+
+    documents: List[Document] = []
+    for item in docs_data:
+        doc = Document(
+            doc_id=item["doc_id"],
+            content=item["content"],
+            title=item.get("title"),
+            metadata=item.get("metadata", {}),
+        )
+        documents.append(doc)
+
+    return documents
+
+
+def load_sample_corpus() -> List[Document]:
+    """Load the bundled default sample document corpus."""
+    return load_corpus_from_json(get_default_corpus_path())
 
 
 def load_dataset_from_json(
@@ -50,7 +97,12 @@ def load_dataset_from_json(
         )
         queries.append(query)
 
-    sample_rankings: Dict[str, Dict[str, List[str]]] = data.get("sample_rankings", {})
+    raw_rankings: Dict[str, Dict[str, List[str]]] = data.get("sample_rankings", {})
+    # Strip metadata keys (prefixed with "_") that are not retrieval system names
+    sample_rankings = {
+        k: v for k, v in raw_rankings.items()
+        if not k.startswith("_")
+    }
     return queries, sample_rankings
 
 

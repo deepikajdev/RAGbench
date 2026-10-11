@@ -1,6 +1,13 @@
 {
   "dataset_name": "RAGBench Sample Evaluation Dataset (v0.1)",
   "description": "Curated benchmark dataset for evaluating RAG retrieval components on real information retrieval questions.",
+  "notes": [
+    "sample_rankings contains ILLUSTRATIVE/PREDEFINED static rankings for Lexical_BM25_Baseline and Dense_Semantic_Baseline.",
+    "These baselines do NOT execute real retrieval algorithms — they are scripted examples of plausible retrieval outputs.",
+    "Some doc IDs in sample_rankings (e.g. doc_prompt_templates, doc_cosine_distance) are placeholders not present in sample_corpus.json.",
+    "These phantom IDs simulate a larger retrieval space and do NOT affect metric calculations (they never match any relevant_doc_ids).",
+    "The only live retrieval system is Real_BM25_Retriever, which is dynamically executed in evaluate.py."
+  ],
   "queries": [
     {
       "query_id": "q_01",
@@ -34,6 +41,7 @@
     }
   ],
   "sample_rankings": {
+    "_note": "ILLUSTRATIVE baselines only. Not real retrieval executions. Some doc IDs below do not exist in sample_corpus.json.",
     "Lexical_BM25_Baseline": {
       "q_01": ["doc_chunking_overlap", "doc_intro_rag", "doc_chunking_strategies", "doc_token_limits", "doc_vector_intro"],
       "q_02": ["doc_bm25_sparse_retrieval", "doc_inverted_index", "doc_tfidf_basics", "doc_dense_embeddings", "doc_unrelated_1"],

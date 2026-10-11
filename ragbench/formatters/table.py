@@ -20,6 +20,9 @@ def format_evaluation_report(report: EvaluationReport, show_query_details: bool 
     lines.append("                     RAGBENCH RETRIEVAL EVALUATION REPORT")
     lines.append("=" * separator_width)
     lines.append("")
+    lines.append("  NOTE: Systems marked [ILLUSTRATIVE] use predefined static rankings.")
+    lines.append("  Systems marked [LIVE] executed real retrieval against the corpus.")
+    lines.append("")
 
     # 1. Summary Comparison Table
     lines.append("--- SUMMARY METRICS (MRR and Mean Recall@K across all queries) ---")
@@ -43,6 +46,17 @@ def format_evaluation_report(report: EvaluationReport, show_query_details: bool 
             row_vals.append(percentage_str.rjust(col_widths[idx + 3]))
         lines.append(" | ".join(row_vals))
 
+    # Print per-system legend immediately below the table
+    lines.append("")
+    lines.append("  System type key:")
+    for system_name in report.summaries:
+        if system_name == "Real_BM25_Retriever":
+            tag = "[LIVE]        "
+            note = "Dynamically executed BM25 search against the corpus"
+        else:
+            tag = "[ILLUSTRATIVE]"
+            note = "Predefined static rankings - not a live retrieval execution"
+        lines.append(f"    {tag}  {system_name}: {note}")
     lines.append("")
 
     # 2. System Comparison Insight

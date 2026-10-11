@@ -1,6 +1,8 @@
 """RAGBench: Production-oriented benchmark and evaluation suite for RAG pipelines."""
 
 from ragbench.core.models import (
+    Document,
+    ScoredDocument,
     EvaluationQuery,
     RankedResult,
     QueryResultMetric,
@@ -13,18 +15,25 @@ from ragbench.metrics.retrieval import (
     reciprocal_rank,
     mean_reciprocal_rank,
 )
+from ragbench.retrievers import BaseRetriever, BM25Retriever
 from ragbench.evaluators.retrieval_evaluator import RetrievalEvaluator
 from ragbench.datasets.loader import (
     load_sample_dataset,
     load_dataset_from_json,
+    load_sample_corpus,
+    load_corpus_from_json,
     convert_rankings_to_results,
     get_default_dataset_path,
+    get_default_corpus_path,
 )
 from ragbench.formatters.table import format_evaluation_report
+from ragbench.api import create_app
 
 __version__ = "0.1.0"
 
 __all__ = [
+    "Document",
+    "ScoredDocument",
     "EvaluationQuery",
     "RankedResult",
     "QueryResultMetric",
@@ -34,10 +43,16 @@ __all__ = [
     "mean_recall_at_k",
     "reciprocal_rank",
     "mean_reciprocal_rank",
+    "BaseRetriever",
+    "BM25Retriever",
     "RetrievalEvaluator",
     "load_sample_dataset",
     "load_dataset_from_json",
+    "load_sample_corpus",
+    "load_corpus_from_json",
     "convert_rankings_to_results",
     "get_default_dataset_path",
+    "get_default_corpus_path",
     "format_evaluation_report",
+    "create_app",
 ]

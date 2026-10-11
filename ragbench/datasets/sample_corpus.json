@@ -1,0 +1,120 @@
+{
+  "corpus_name": "RAGBench Sample Document Corpus (v0.1)",
+  "description": "Curated collection of technical documents covering RAG retrieval, chunking, embeddings, reranking, and hybrid search concepts.",
+  "documents": [
+    {
+      "doc_id": "doc_chunking_overlap",
+      "title": "Text Splitting and Chunk Overlap Mechanics",
+      "content": "Chunk overlap is a vital technique used during document text splitting. When chunking long text, adding a sliding window overlap preserves semantic context across chunk boundaries, ensuring that critical sentences and entities are not severed between adjacent chunks.",
+      "metadata": {"category": "chunking"}
+    },
+    {
+      "doc_id": "doc_chunking_strategies",
+      "title": "Document Chunking Strategies for RAG",
+      "content": "Various chunking strategies exist for RAG systems, including fixed character windows, recursive character splitting, markdown section splitting, and semantic boundary chunking. Proper chunk size directly balances retrieval granularity against contextual coherence.",
+      "metadata": {"category": "chunking"}
+    },
+    {
+      "doc_id": "doc_dense_embeddings",
+      "title": "Dense Vector Embeddings and Semantic Search",
+      "content": "Dense vector embeddings represent text passages as high-dimensional continuous vectors. Unlike sparse lexical search, dense embeddings capture semantic similarity, synonyms, and conceptual relationships by computing cosine distance or inner products between query and document vectors.",
+      "metadata": {"category": "embeddings"}
+    },
+    {
+      "doc_id": "doc_bm25_sparse_retrieval",
+      "title": "BM25 Sparse Lexical Search Algorithm",
+      "content": "BM25 (Best Matching 25) is a sparse lexical keyword search algorithm based on probabilistic relevance frameworks. BM25 scores document relevance using term frequency with saturation (k1), document length normalization (b), and inverse document frequency (IDF).",
+      "metadata": {"category": "retrieval"}
+    },
+    {
+      "doc_id": "doc_lost_in_the_middle",
+      "title": "The 'Lost in the Middle' Phenomenon in Context Windows",
+      "content": "Large language models often struggle to access information located in the middle of long prompts. Known as context dilution or 'lost in the middle', models exhibit higher recall for facts positioned at the beginning or very end of the retrieved context window.",
+      "metadata": {"category": "generation_quality"}
+    },
+    {
+      "doc_id": "doc_hallucination_causes",
+      "title": "Root Causes of Hallucinations in RAG Pipelines",
+      "content": "Hallucinations in RAG pipelines occur when language models generate ungrounded claims. Primary causes include low retrieval recall, conflicting context passages, context dilution, and retriever noise that distracts the model from factual grounding.",
+      "metadata": {"category": "generation_quality"}
+    },
+    {
+      "doc_id": "doc_cross_encoder_rerankers",
+      "title": "Cross-Encoder Rerankers in Two-Stage Retrieval",
+      "content": "Cross-encoder reranking significantly improves first-stage retrieval accuracy. While bi-encoders produce separate embeddings, cross-encoders feed the query and document together through full cross-attention layers to compute deep semantic relevance scores.",
+      "metadata": {"category": "reranking"}
+    },
+    {
+      "doc_id": "doc_hybrid_rrf_fusion",
+      "title": "Reciprocal Rank Fusion (RRF) in Hybrid Retrieval",
+      "content": "Reciprocal Rank Fusion (RRF) is an effective algorithmic method for combining multiple ranked retrieval result sets. RRF calculates combined scores based on the reciprocal rank of documents across sparse BM25 and dense vector rankings without requiring score normalization.",
+      "metadata": {"category": "hybrid_search"}
+    },
+    {
+      "doc_id": "doc_hybrid_search_overview",
+      "title": "Hybrid Search Architecture and Fusion",
+      "content": "A hybrid search architecture unifies sparse keyword search and dense semantic vector retrieval. By merging exact keyword matching with semantic concept retrieval, hybrid architectures mitigate the individual blind spots of pure lexical or pure vector approaches.",
+      "metadata": {"category": "hybrid_search"}
+    },
+    {
+      "doc_id": "doc_intro_rag",
+      "title": "Introduction to Retrieval-Augmented Generation",
+      "content": "Retrieval-Augmented Generation (RAG) combines an external information retrieval system with a generative language model. Grounding generative responses in authoritative documents drastically reduces hallucinations and provides traceable citations.",
+      "metadata": {"category": "fundamentals"}
+    },
+    {
+      "doc_id": "doc_token_limits",
+      "title": "Context Budget and Token Limit Considerations",
+      "content": "Transformer models operate within finite context windows measured in tokens. Allocating token budgets between system instructions, retrieved context chunks, few-shot examples, and generation output is an essential engineering optimization.",
+      "metadata": {"category": "fundamentals"}
+    },
+    {
+      "doc_id": "doc_vector_intro",
+      "title": "Vector Databases and Indexing Mechanics",
+      "content": "Vector databases store embedding representations and perform approximate nearest neighbor (ANN) search using graph indices like HNSW or inverted file indexes. They provide low-latency semantic search over millions of text chunks.",
+      "metadata": {"category": "databases"}
+    },
+    {
+      "doc_id": "doc_inverted_index",
+      "title": "Inverted Index Construction and Token Posting Lists",
+      "content": "An inverted index is a foundational information retrieval data structure that maps vocabulary tokens to posting lists containing document IDs and term frequencies, facilitating high-speed keyword lookups.",
+      "metadata": {"category": "information_retrieval"}
+    },
+    {
+      "doc_id": "doc_tfidf_basics",
+      "title": "TF-IDF Foundations in Lexical Search",
+      "content": "TF-IDF measures term importance by balancing term frequency within a document against inverse document frequency across the whole corpus. It serves as the historical predecessor to the BM25 scoring function.",
+      "metadata": {"category": "information_retrieval"}
+    },
+    {
+      "doc_id": "doc_bi_encoders",
+      "title": "Bi-Encoder Architectures for Fast Vector Retrieval",
+      "content": "Bi-encoders encode queries and documents into separate vector spaces independently. This separation allows offline pre-computation of document embeddings and sub-linear approximate nearest neighbor retrieval at query time.",
+      "metadata": {"category": "embeddings"}
+    },
+    {
+      "doc_id": "doc_unrelated_1",
+      "title": "Culinary Baking and Sourdough Techniques",
+      "content": "Artisan sourdough bread requires precise hydration ratios, active starter fermentation, and consistent oven temperatures with steam injection to achieve a crisp crust and open crumb structure.",
+      "metadata": {"category": "unrelated"}
+    },
+    {
+      "doc_id": "doc_unrelated_2",
+      "title": "Observational Astronomy and Deep Space Telescopes",
+      "content": "Reflecting telescopes use curved optical mirrors to collect electromagnetic radiation from distant stellar nebulae and spiral galaxies across infrared and optical wavelengths.",
+      "metadata": {"category": "unrelated"}
+    },
+    {
+      "doc_id": "doc_unrelated_3",
+      "title": "Internal Combustion Engine Maintenance",
+      "content": "Routine automotive maintenance requires monitoring engine oil viscosity, replacing worn spark plugs, and inspecting timing belts to ensure efficient fuel combustion and cylinder operation.",
+      "metadata": {"category": "unrelated"}
+    },
+    {
+      "doc_id": "doc_unrelated_4",
+      "title": "Organic Soil Chemistry and Crop Rotation",
+      "content": "Sustainable agricultural practices emphasize monitoring soil nitrogen, phosphorus, and pH balance while alternating legume and brassica crop plantings to prevent nutrient depletion.",
+      "metadata": {"category": "unrelated"}
+    }
+  ]
+}

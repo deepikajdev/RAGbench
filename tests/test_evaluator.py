@@ -23,6 +23,21 @@ class TestEvaluatorPipeline(unittest.TestCase):
         self.assertEqual(first_q.query_id, "q_01")
         self.assertGreater(len(first_q.relevant_doc_ids), 0)
 
+    def test_load_sample_corpus(self) -> None:
+        """Sample corpus must load documents with non-empty IDs and contents."""
+        from ragbench.core.models import Document
+        from ragbench.datasets.loader import load_sample_corpus, load_corpus_from_json
+
+        corpus = load_sample_corpus()
+        self.assertGreater(len(corpus), 0)
+        first_doc = corpus[0]
+        self.assertIsInstance(first_doc, Document)
+        self.assertTrue(first_doc.doc_id)
+        self.assertTrue(first_doc.content)
+
+        with self.assertRaises(FileNotFoundError):
+            load_corpus_from_json("non_existent_corpus_file.json")
+
     def test_evaluator_runs_and_produces_valid_summaries(self) -> None:
         """RetrievalEvaluator should compute mean Recall@K for each system."""
         queries, rankings = load_sample_dataset()

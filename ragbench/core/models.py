@@ -19,6 +19,27 @@ class EvaluationQuery:
             raise ValueError(f"relevant_doc_ids cannot be empty for query {self.query_id!r}")
 
 
+@dataclass(frozen=True)
+class Document:
+    """Represents a text document in a retrieval corpus."""
+    doc_id: str
+    content: str
+    title: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if not self.doc_id:
+            raise ValueError("doc_id cannot be empty")
+
+
+@dataclass(frozen=True)
+class ScoredDocument:
+    """A retrieved document candidate with its relevance score and assigned rank."""
+    doc_id: str
+    score: float
+    rank: int
+
+
 @dataclass
 class RankedResult:
     """Represents a ranked list of retrieved document IDs returned by a retrieval system."""
