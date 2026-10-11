@@ -1,0 +1,52 @@
+{
+  "dataset_name": "RAGBench Sample Evaluation Dataset (v0.1)",
+  "description": "Curated benchmark dataset for evaluating RAG retrieval components on real information retrieval questions.",
+  "queries": [
+    {
+      "query_id": "q_01",
+      "query_text": "What is chunk overlap and why is it used in text splitting?",
+      "relevant_doc_ids": ["doc_chunking_overlap", "doc_chunking_strategies"],
+      "metadata": {"category": "chunking", "difficulty": "easy"}
+    },
+    {
+      "query_id": "q_02",
+      "query_text": "How do dense vector embeddings differ from sparse BM25 lexical search?",
+      "relevant_doc_ids": ["doc_dense_embeddings", "doc_bm25_sparse_retrieval"],
+      "metadata": {"category": "embeddings", "difficulty": "medium"}
+    },
+    {
+      "query_id": "q_03",
+      "query_text": "What causes context dilution and 'lost in the middle' phenomena in RAG generation?",
+      "relevant_doc_ids": ["doc_lost_in_the_middle", "doc_hallucination_causes"],
+      "metadata": {"category": "generation_quality", "difficulty": "medium"}
+    },
+    {
+      "query_id": "q_04",
+      "query_text": "How does cross-encoder reranking improve first-stage retrieval accuracy?",
+      "relevant_doc_ids": ["doc_cross_encoder_rerankers"],
+      "metadata": {"category": "reranking", "difficulty": "easy"}
+    },
+    {
+      "query_id": "q_05",
+      "query_text": "What is Reciprocal Rank Fusion (RRF) in hybrid retrieval architectures?",
+      "relevant_doc_ids": ["doc_hybrid_rrf_fusion", "doc_hybrid_search_overview"],
+      "metadata": {"category": "hybrid_search", "difficulty": "hard"}
+    }
+  ],
+  "sample_rankings": {
+    "Lexical_BM25_Baseline": {
+      "q_01": ["doc_chunking_overlap", "doc_intro_rag", "doc_chunking_strategies", "doc_token_limits", "doc_vector_intro"],
+      "q_02": ["doc_bm25_sparse_retrieval", "doc_inverted_index", "doc_tfidf_basics", "doc_dense_embeddings", "doc_unrelated_1"],
+      "q_03": ["doc_unrelated_2", "doc_prompt_templates", "doc_hallucination_causes", "doc_unrelated_3", "doc_lost_in_the_middle"],
+      "q_04": ["doc_cross_encoder_rerankers", "doc_bi_encoders", "doc_similarity_scores", "doc_chunking_strategies", "doc_intro_rag"],
+      "q_05": ["doc_hybrid_search_overview", "doc_bm25_sparse_retrieval", "doc_unrelated_4", "doc_hybrid_rrf_fusion", "doc_dense_embeddings"]
+    },
+    "Dense_Semantic_Baseline": {
+      "q_01": ["doc_vector_intro", "doc_chunking_overlap", "doc_chunking_strategies", "doc_token_limits", "doc_intro_rag"],
+      "q_02": ["doc_dense_embeddings", "doc_bm25_sparse_retrieval", "doc_cosine_distance", "doc_ann_indexing", "doc_inverted_index"],
+      "q_03": ["doc_lost_in_the_middle", "doc_hallucination_causes", "doc_attention_mechanisms", "doc_prompt_templates", "doc_unrelated_2"],
+      "q_04": ["doc_bi_encoders", "doc_cross_encoder_rerankers", "doc_similarity_scores", "doc_colbert_late_interaction", "doc_intro_rag"],
+      "q_05": ["doc_hybrid_rrf_fusion", "doc_hybrid_search_overview", "doc_dense_embeddings", "doc_rank_merging", "doc_unrelated_4"]
+    }
+  }
+}
