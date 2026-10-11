@@ -22,8 +22,8 @@ def format_evaluation_report(report: EvaluationReport, show_query_details: bool 
     lines.append("")
 
     # 1. Summary Comparison Table
-    lines.append("--- SUMMARY METRICS (Mean Recall@K across all queries) ---")
-    headers = ["Retrieval System", "Queries"] + [f"Mean R@{k}" for k in report.k_values]
+    lines.append("--- SUMMARY METRICS (MRR and Mean Recall@K across all queries) ---")
+    headers = ["Retrieval System", "Queries", "MRR"] + [f"Mean R@{k}" for k in report.k_values]
     col_widths = [max(len(h), 26 if i == 0 else 12) for i, h in enumerate(headers)]
 
     header_row = " | ".join(h.ljust(col_widths[i]) for i, h in enumerate(headers))
@@ -35,11 +35,12 @@ def format_evaluation_report(report: EvaluationReport, show_query_details: bool 
         row_vals = [
             system_name.ljust(col_widths[0]),
             str(summary.num_queries).center(col_widths[1]),
+            f"{summary.mrr:.4f} ({summary.mrr * 100:.1f}%)".rjust(col_widths[2]),
         ]
         for idx, k in enumerate(report.k_values):
             val = summary.mean_recall_at_k.get(k, 0.0)
             percentage_str = f"{val:.4f} ({val * 100:.1f}%)"
-            row_vals.append(percentage_str.rjust(col_widths[idx + 2]))
+            row_vals.append(percentage_str.rjust(col_widths[idx + 3]))
         lines.append(" | ".join(row_vals))
 
     lines.append("")
@@ -47,6 +48,21 @@ def format_evaluation_report(report: EvaluationReport, show_query_details: bool 
     # 2. System Comparison Insight
     if len(report.summaries) >= 2:
         lines.append("--- HEAD-TO-HEAD COMPARISON ---")
+        mrr_scores = [
+            (name, summary.mrr)
+            for name, summary in report.summaries.items()
+        ]
+        mrr_scores.sort(key=lambda x: x[1], reverse=True)
+        m_leader, m_leader_score = mrr_scores[0]
+        m_runner, m_runner_score = mrr_scores[1]
+        m_diff = m_leader_score - m_runner_score
+        if m_diff > 0.0001:
+            lines.append(
+                f"  * MRR: '{m_leader}' leads '{m_runner}' by +{m_diff:.4f} (+{m_diff * 100:.1f}%)"
+            )
+        else:
+            lines.append(f"  * MRR: Tied at {m_leader_score:.4f} ({m_leader_score * 100:.1f}%)")
+
         for k in report.k_values:
             scores = [
                 (name, summary.mean_recall_at_k.get(k, 0.0))
@@ -67,8 +83,8 @@ def format_evaluation_report(report: EvaluationReport, show_query_details: bool 
     # 3. Query-level Breakdown (if requested)
     if show_query_details and report.query_results:
         lines.append("--- PER-QUERY BREAKDOWN ---")
-        q_headers = ["Query ID", "System", "Rel Docs", "Retrieved"] + [f"R@{k}" for k in report.k_values]
-        q_widths = [10, 26, 10, 10] + [8 for _ in report.k_values]
+        q_headers = ["Query ID", "System", "Rel Docs", "Retrieved", "RR"] + [f"R@{k}" for k in report.k_values]
+        q_widths = [10, 26, 10, 10, 8] + [8 for _ in report.k_values]
 
         q_header_row = " | ".join(h.ljust(q_widths[i]) for i, h in enumerate(q_headers))
         q_divider_row = "-+-".join("-" * q_widths[i] for i in range(len(q_headers)))
@@ -81,10 +97,11 @@ def format_evaluation_report(report: EvaluationReport, show_query_details: bool 
                 res.system_name.ljust(q_widths[1]),
                 str(res.total_relevant).center(q_widths[2]),
                 str(res.retrieved_count).center(q_widths[3]),
+                f"{res.reciprocal_rank:.2f}".rjust(q_widths[4]),
             ]
             for idx, k in enumerate(report.k_values):
                 score = res.recall_at_k.get(k, 0.0)
-                row_vals.append(f"{score:.2f}".rjust(q_widths[idx + 4]))
+                row_vals.append(f"{score:.2f}".rjust(q_widths[idx + 5]))
             lines.append(" | ".join(row_vals))
 
         lines.append("")

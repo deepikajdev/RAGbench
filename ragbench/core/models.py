@@ -36,6 +36,7 @@ class QueryResultMetric:
     system_name: str
     total_relevant: int
     retrieved_count: int
+    reciprocal_rank: float
     recall_at_k: Dict[int, float]
 
 
@@ -44,6 +45,7 @@ class EvaluationSummary:
     """Aggregated evaluation metrics for a retrieval system across all evaluated queries."""
     system_name: str
     num_queries: int
+    mrr: float
     mean_recall_at_k: Dict[int, float]
 
 

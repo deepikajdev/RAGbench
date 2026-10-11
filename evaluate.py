@@ -77,6 +77,7 @@ def main() -> int:
             "summaries": {
                 name: {
                     "num_queries": s.num_queries,
+                    "mrr": s.mrr,
                     "mean_recall_at_k": s.mean_recall_at_k,
                 }
                 for name, s in report.summaries.items()
@@ -85,6 +86,7 @@ def main() -> int:
                 {
                     "query_id": q.query_id,
                     "system_name": q.system_name,
+                    "reciprocal_rank": q.reciprocal_rank,
                     "recall_at_k": q.recall_at_k,
                 }
                 for q in report.query_results

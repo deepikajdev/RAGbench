@@ -7,7 +7,12 @@ from ragbench.core.models import (
     EvaluationSummary,
     EvaluationReport,
 )
-from ragbench.metrics.retrieval import recall_at_k, mean_recall_at_k
+from ragbench.metrics.retrieval import (
+    recall_at_k,
+    mean_recall_at_k,
+    reciprocal_rank,
+    mean_reciprocal_rank,
+)
 from ragbench.evaluators.retrieval_evaluator import RetrievalEvaluator
 from ragbench.datasets.loader import (
     load_sample_dataset,
@@ -27,6 +32,8 @@ __all__ = [
     "EvaluationReport",
     "recall_at_k",
     "mean_recall_at_k",
+    "reciprocal_rank",
+    "mean_reciprocal_rank",
     "RetrievalEvaluator",
     "load_sample_dataset",
     "load_dataset_from_json",

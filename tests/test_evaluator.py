@@ -34,6 +34,7 @@ class TestEvaluatorPipeline(unittest.TestCase):
 
         for system_name, summary in report.summaries.items():
             self.assertEqual(summary.num_queries, 5)
+            self.assertTrue(0.0 <= summary.mrr <= 1.0, f"MRR {summary.mrr} out of bounds")
             self.assertIn(1, summary.mean_recall_at_k)
             self.assertIn(3, summary.mean_recall_at_k)
             self.assertIn(5, summary.mean_recall_at_k)
@@ -41,6 +42,9 @@ class TestEvaluatorPipeline(unittest.TestCase):
             for k in [1, 3, 5]:
                 score = summary.mean_recall_at_k[k]
                 self.assertTrue(0.0 <= score <= 1.0, f"Score {score} out of bounds for K={k}")
+
+        for query_result in report.query_results:
+            self.assertTrue(0.0 <= query_result.reciprocal_rank <= 1.0)
 
     def test_evaluator_invalid_k_raises(self) -> None:
         """Evaluator initialization with invalid k values must raise ValueError."""
@@ -60,6 +64,8 @@ class TestEvaluatorPipeline(unittest.TestCase):
         self.assertIn("RAGBENCH RETRIEVAL EVALUATION REPORT", text_report)
         self.assertIn("Lexical_BM25_Baseline", text_report)
         self.assertIn("Dense_Semantic_Baseline", text_report)
+        self.assertIn("MRR", text_report)
+        self.assertIn("RR", text_report)
         self.assertIn("Mean R@1", text_report)
         self.assertIn("Mean R@3", text_report)
         self.assertIn("Mean R@5", text_report)

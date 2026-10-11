@@ -9,11 +9,16 @@ from ragbench.core.models import (
     QueryResultMetric,
     RankedResult,
 )
-from ragbench.metrics.retrieval import recall_at_k, mean_recall_at_k
+from ragbench.metrics.retrieval import (
+    recall_at_k,
+    mean_recall_at_k,
+    reciprocal_rank,
+    mean_reciprocal_rank,
+)
 
 
 class RetrievalEvaluator:
-    """Evaluates ranked retrieval outputs against benchmark queries using Recall@K."""
+    """Evaluates ranked retrieval outputs against benchmark queries using Recall@K and MRR."""
 
     def __init__(self, k_values: Sequence[int] = (1, 3, 5)) -> None:
         """Initialize the evaluator with target cutoff depths.
@@ -45,6 +50,7 @@ class RetrievalEvaluator:
         """
         query_metrics: List[QueryResultMetric] = []
         k_scores: Dict[int, List[float]] = {k: [] for k in self.k_values}
+        rr_scores: List[float] = []
 
         for q in queries:
             retrieved = rankings.get(q.query_id, [])
@@ -55,12 +61,16 @@ class RetrievalEvaluator:
                 recalls[k] = score
                 k_scores[k].append(score)
 
+            rr = reciprocal_rank(retrieved, q.relevant_doc_ids)
+            rr_scores.append(rr)
+
             metric = QueryResultMetric(
                 query_id=q.query_id,
                 query_text=q.query_text,
                 system_name=system_name,
                 total_relevant=len(q.relevant_doc_ids),
                 retrieved_count=len(retrieved),
+                reciprocal_rank=rr,
                 recall_at_k=recalls,
             )
             query_metrics.append(metric)
@@ -68,10 +78,12 @@ class RetrievalEvaluator:
         mean_recalls: Dict[int, float] = {
             k: mean_recall_at_k(scores) for k, scores in k_scores.items()
         }
+        mrr = mean_reciprocal_rank(rr_scores)
 
         summary = EvaluationSummary(
             system_name=system_name,
             num_queries=len(queries),
+            mrr=mrr,
             mean_recall_at_k=mean_recalls,
         )
 

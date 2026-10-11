@@ -1,7 +1,12 @@
 """Unit tests for RAG retrieval metrics and edge cases."""
 
 import unittest
-from ragbench.metrics.retrieval import recall_at_k, mean_recall_at_k
+from ragbench.metrics.retrieval import (
+    recall_at_k,
+    mean_recall_at_k,
+    reciprocal_rank,
+    mean_reciprocal_rank,
+)
 
 
 class TestRecallAtK(unittest.TestCase):
@@ -86,5 +91,72 @@ class TestRecallAtK(unittest.TestCase):
         self.assertAlmostEqual(mean_recall_at_k([0.5, 1.0, 0.0]), 0.5)
 
 
+class TestReciprocalRank(unittest.TestCase):
+    """Test suite covering Reciprocal Rank (RR) and Mean Reciprocal Rank (MRR)."""
+
+    def test_relevant_document_at_rank_1(self) -> None:
+        """First relevant document at rank 1 yields RR = 1.0."""
+        retrieved = ["doc_A", "doc_B", "doc_C"]
+        relevant = {"doc_A"}
+        self.assertEqual(reciprocal_rank(retrieved, relevant), 1.0)
+
+    def test_relevant_document_at_rank_2(self) -> None:
+        """First relevant document at rank 2 yields RR = 0.5 (1/2)."""
+        retrieved = ["doc_X", "doc_A", "doc_B"]
+        relevant = {"doc_A", "doc_B"}
+        self.assertEqual(reciprocal_rank(retrieved, relevant), 0.5)
+
+    def test_relevant_document_at_rank_3(self) -> None:
+        """First relevant document at rank 3 yields RR = 1/3 (~0.3333)."""
+        retrieved = ["doc_X", "doc_Y", "doc_A"]
+        relevant = {"doc_A"}
+        self.assertAlmostEqual(reciprocal_rank(retrieved, relevant), 1 / 3)
+
+    def test_no_relevant_documents_retrieved(self) -> None:
+        """When no relevant documents appear in the retrieved list, RR is 0.0."""
+        retrieved = ["doc_X", "doc_Y", "doc_Z"]
+        relevant = {"doc_A", "doc_B"}
+        self.assertEqual(reciprocal_rank(retrieved, relevant), 0.0)
+
+    def test_empty_retrieved_list(self) -> None:
+        """Empty retrieved list returns 0.0."""
+        retrieved: list[str] = []
+        relevant = {"doc_A"}
+        self.assertEqual(reciprocal_rank(retrieved, relevant), 0.0)
+
+    def test_reciprocal_rank_with_cutoff_k(self) -> None:
+        """Cutoff k restricts the search depth: rank 3 excluded when k=2."""
+        retrieved = ["doc_X", "doc_Y", "doc_A"]
+        relevant = {"doc_A"}
+        self.assertEqual(reciprocal_rank(retrieved, relevant, k=2), 0.0)
+        self.assertAlmostEqual(reciprocal_rank(retrieved, relevant, k=3), 1 / 3)
+
+    def test_invalid_k_raises(self) -> None:
+        """Cutoff k <= 0 or non-integer must raise ValueError."""
+        with self.assertRaises(ValueError):
+            reciprocal_rank(["doc_A"], {"doc_A"}, k=0)
+
+        with self.assertRaises(ValueError):
+            reciprocal_rank(["doc_A"], {"doc_A"}, k=-2)
+
+        with self.assertRaises(ValueError):
+            reciprocal_rank(["doc_A"], {"doc_A"}, k=1.5)  # type: ignore
+
+        with self.assertRaises(ValueError):
+            reciprocal_rank(["doc_A"], {"doc_A"}, k=True)  # type: ignore
+
+    def test_empty_relevant_docs_raises(self) -> None:
+        """Empty relevant documents set must raise ValueError."""
+        with self.assertRaises(ValueError):
+            reciprocal_rank(["doc_A"], set())
+
+    def test_mean_reciprocal_rank(self) -> None:
+        """Mean reciprocal rank computes arithmetic average, and handles empty list."""
+        self.assertEqual(mean_reciprocal_rank([]), 0.0)
+        # Average of 1.0 (rank 1), 0.5 (rank 2), and 0.0 (no hit) = 1.5 / 3 = 0.5
+        self.assertAlmostEqual(mean_reciprocal_rank([1.0, 0.5, 0.0]), 0.5)
+
+
 if __name__ == "__main__":
     unittest.main()
+
